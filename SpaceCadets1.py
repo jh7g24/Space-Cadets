@@ -1,7 +1,7 @@
 import requests, re
 
 # Take in Email ID from user
-id = input()
+id = input("Enter an email ID: ")
 
 # Construct URL
 url = "https://www.ecs.soton.ac.uk/people/" + id
