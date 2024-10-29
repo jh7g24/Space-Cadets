@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Title</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+        .name-text {
+            color: white;
+        }
+        .messages {
+            overflow-y: auto;
+            height: 90vh;
+            width: 100%;
+            background-color: #494b52; /*red;*/
+            display: block;
+            margin: 0px;
+            padding: 0px;
+        }
+        .message {
+            background-color: #2B2D31; /*yellow;*/
+            width: 100%;
+            padding: 0px;
+            margin-bottom: 10px;
+            display: flex;
+            text-align: middle;
+        }
+        .message-name {
+            background-color: #2B2D31; /*green;*/
+            width: 10%;
+            display: inline-block;
+            overflow-x: hidden;
+            margin: auto;
+            text-align: center;
+        }
+        .message-content{
+            background-color: #B5BAC1;
+            width: 89%;
+            height: auto;
+            display: inline-block;
+            text-align: left;
+        }
+    </style>
+    <script type="text/javascript">
+        function sleep(ms = 0) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        var last_HTML = "";
+
+        window.onload = async function() {
+            const messagesArea = document.getElementById("messages-area");
+            while (true) {
+                await sleep(1000);
+                fetch("/fetch_messages", {method: "GET"})
+                .then(response => {
+                    return response.text()
+                })
+                .then(html => {
+                    if (html != last_HTML) {
+                        last_HTML = html;
+                        messagesArea.innerHTML = html;
+                    }
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="messages-area" class="messages">
+        {% block messages %}{% endblock %}
+    </div>
+    <div style="min-height: 10vh; background-color: #232428;">
+        <form method="POST">
+            <input name="name">
+            <input name="message">
+            <input type="submit">
+        </form>
+    </div>
+</body>
+</html>
