@@ -10,7 +10,6 @@ public class DropDownController : MonoBehaviour
     public GameObject inkContainer;
 
     void Start() {
-        Debug.Log("now");
         this.changeColors();
     }
 
@@ -37,8 +36,8 @@ public class DropDownController : MonoBehaviour
             this.inkContainer.SetActive(false);
         } else {
             this.inkContainer.SetActive(true);
-        }
-        string func = "setInk" + color;
+            string func = "setInk" + color;
         this.inkContainer.BroadcastMessage(func);
+        }
     }
 }

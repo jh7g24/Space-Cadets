@@ -10,9 +10,10 @@ public class RootController : MonoBehaviour
     public GameObject gearPrefab;
     public TMP_InputField gearsIPF;
     public TMP_InputField radiusIPF;
+    public TMP_InputField radiusRatiosIPF;
     
     private int gears;
-    private int firstRadius;
+    private float firstRadius;
     private int rate;
     private bool runnning = false;
 
@@ -37,9 +38,46 @@ public class RootController : MonoBehaviour
     public void startSim() {
         this.runnning = true;
         this.gears = int.Parse(this.gearsIPF.text);
-        this.firstRadius = int.Parse(this.radiusIPF.text);
+        this.firstRadius = float.Parse(this.radiusIPF.text);
+
+
         GameObject gear = GameObject.Instantiate(this.gearPrefab);
         gear.GetComponent<Transform>().SetParent(this.GetComponent<Transform>());
-        gear.SendMessage("setup", new Vector2(this.firstRadius, this.gears-1));
+
+        float[] ratios = this.unpackRatios(this.radiusRatiosIPF.text);
+        gearsData setupParams = new gearsData(this.firstRadius, this.gears-1, ratios);
+        gear.SendMessage("setup", setupParams);
+    }
+
+    private float[] unpackRatios(string inputString) {
+        string[] ratiosSTR = inputString.Split(',');
+        float[] ratios = new float[this.gears];
+        for (int i = 0; i < ratiosSTR.Length; i++) {
+            ratios[i] = float.Parse(ratiosSTR[i]);
+        }
+        while (ratios.Length < this.gears) {
+            ratios[ratios.Length] = ratios[ratios.Length - 1];
+        }
+        this.printArray(ratios);
+        return ratios;
+    }
+
+    private void printArray(float[] arr) {
+        foreach (float item in arr) {
+            Debug.Log(item);
+        }
     }
 }
+
+public struct gearsData {
+    public float radius;
+    public int depth;
+    public float[] ratios;
+
+    public gearsData(float r, int d, float[] rs) {
+        this.radius = r;
+        this.depth = d;
+        this.ratios = rs;
+    }
+}
+

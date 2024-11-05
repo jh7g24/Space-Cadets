@@ -10,20 +10,21 @@ public class GearController : MonoBehaviour
     public bool penOn = false;
 
     private GameObject inkContainer;
-    private int radius;
-    private int depth;
-    
+    private float radius;    
 
 
-    // r is radius to be set
-    void setup(Vector2 args) {
+    void setup(gearsData args) {
         this.inkContainer = GameObject.Find("Ink Blobs");
-        this.radius = (int) args[0];
+        this.radius = args.radius;
+        Debug.Log(this.radius);
         this.GetComponent<Transform>().position = this.GetComponent<Transform>().parent.position + new Vector3(this.radius, 0, 0);
-        if (args[1] > 0) {
+        if (args.depth > 0) {
             GameObject gear = GameObject.Instantiate(gearPrefab);
             gear.GetComponent<Transform>().SetParent(this.GetComponent<Transform>());
-            gear.SendMessage("setup", new Vector2(this.radius * 0.25f, args[1]-1));
+            int index = args.ratios.Length - 1 - args.depth;
+            args.radius *= args.ratios[index];
+            args.depth--;
+            gear.SendMessage("setup", args);
         } else {
             this.penDown();
         }
